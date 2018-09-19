@@ -59,4 +59,20 @@ final class LineItem
 
         $this->invoice = $invoice;
     }
+
+
+    public function id(): UuidInterface
+    {
+        return $this->id;
+    }
+
+    public function item(): Item
+    {
+        return $this->item;
+    }
+
+    public function quantity(): float
+    {
+        return $this->quantity;
+    }
 }

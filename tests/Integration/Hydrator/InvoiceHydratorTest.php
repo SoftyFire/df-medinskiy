@@ -30,12 +30,13 @@ class InvoiceHydratorTest extends TestCase
     {
         $invoice = \Billing\Domain\Aggregate\Invoice::new();
         $item = \Billing\Domain\Aggregate\Item::new('Test item', new \Money\Money(10000, new \Money\Currency('USD')));
-        $invoice->addLine(\Billing\Domain\Entity\LineItem::forItem($item));
+        $invoice->addLine(\Billing\Domain\Entity\LineItem::forItem($item, 1));
 
         $serialized = [
             'id' => $invoice->id()->toString(),
             'lineItems' => [
                 [
+                    'id' => $invoice->lines()[0]->id()->toString(),
                     'item' => [
                         'id' => $item->id()->toString(),
                         'name' => 'Test item',
@@ -56,7 +57,7 @@ class InvoiceHydratorTest extends TestCase
         $this->assertTrue($restored->id()->equals($invoice->id()));
 
         /** @var LineItem[] $restoredLines */
-        $restoredLines = $restored->getLines();
+        $restoredLines = $restored->lines();
         $this->assertEquals($restoredLines[0]->item()->name(), $item->name());
         $this->assertTrue($restoredLines[0]->item()->id()->equals($item->id()));
         $this->assertTrue($restoredLines[0]->item()->price()->equals($item->price()));

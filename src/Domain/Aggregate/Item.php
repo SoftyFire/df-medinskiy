@@ -43,4 +43,20 @@ final class Item
 
         return $item;
     }
+
+    public function id(): UuidInterface
+    {
+        return $this->id;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function price(): Money
+    {
+        return $this->price;
+    }
+
 }

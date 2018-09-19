@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Billing\Infrastructure\Hydrator;
 
 use Billing\Domain\Aggregate\Item;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class ItemHydrator
@@ -13,26 +14,34 @@ use Billing\Domain\Aggregate\Item;
  */
 class ItemHydrator extends BaseHydrator
 {
-    public function hydrate(array $data, $object)
+    public function hydrate(array $data, $classNameOrObject)
     {
-        // TODO: implement
-        throw new \InvalidArgumentException('Method ' . __METHOD__ . ' is not implemented yet.');
+        $data['id'] = Uuid::fromString($data['id']);
+        $data['price'] = new \Money\Money(
+            $data['price']['amount'],
+            new \Money\Currency($data['price']['currencyCode'])
+        );
 
-        return $object;
+        return parent::hydrate($data, $classNameOrObject);
     }
 
     /**
      * Extract values from an object
      *
      * @param  Item $object
+     *
      * @return array
      */
     public function extract($object)
     {
-        // TODO: implement
-        throw new \InvalidArgumentException('Method ' . __METHOD__ . ' is not implemented yet.');
-
-        return [];
+        return [
+            'id'    => $object->id()->toString(),
+            'name'  => $object->name(),
+            'price' => [
+                'amount'       => $object->price()->getAmount(),
+                'currencyCode' => $object->price()->getCurrency(),
+            ],
+        ];
     }
 }
 
